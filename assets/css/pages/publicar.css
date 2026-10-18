@@ -1,0 +1,128 @@
+.publicar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  padding-top: 40px;
+  padding-bottom: 96px;
+}
+
+.form-vaga {
+  max-width: 640px;
+}
+
+.form-bloco {
+  padding-bottom: 12px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--tinta);
+}
+
+.form-bloco:last-of-type {
+  border-bottom: none;
+}
+
+.form-bloco h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.form-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.previa {
+  align-self: start;
+}
+
+.previa h2 {
+  margin-bottom: 6px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.previa > p {
+  margin-bottom: 20px;
+  color: var(--tinta-suave);
+}
+
+.previa-palco {
+  padding: 40px 28px;
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio-lg);
+  background: var(--laranja);
+}
+
+.previa-palco .ficha {
+  box-shadow: 6px 6px 0 var(--tinta);
+  transform: rotate(-1.5deg);
+}
+
+.previa-descricao {
+  margin-top: 28px;
+  padding: 18px 20px;
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio);
+  background: var(--branco);
+}
+
+.previa-descricao strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--fonte-titulo);
+}
+
+.previa-descricao p {
+  color: var(--tinta-suave);
+  white-space: pre-line;
+}
+
+.vazio-texto {
+  color: #a8968a;
+}
+
+@media (min-width: 1000px) {
+  .publicar {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 480px);
+    gap: 64px;
+  }
+
+  .previa {
+    position: sticky;
+    top: 104px;
+  }
+}
+
+.campo-mapa[hidden] {
+  display: none;
+}
+
+.rotulo-mapa {
+  font-weight: 600;
+}
+
+.link-centro {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--laranja-texto);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mapa-publicar {
+  height: 300px;
+  margin-top: 10px;
+  cursor: crosshair;
+}
+
+.campo-mapa .campo-ajuda {
+  margin-top: 0;
+}
+
+.campo-mapa.erro .mapa {
+  border-color: var(--erro);
+}

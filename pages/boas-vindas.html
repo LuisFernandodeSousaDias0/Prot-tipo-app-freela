@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conta criada | Free-la</title>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>protegerPagina();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/pages/boas-vindas.css">
+</head>
+<body>
+
+  <div class="bv">
+    <header class="bv-topo">
+      <div class="container">
+        <a href="home.html" class="logo" aria-label="Free-la, vagas abertas">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
+          </svg>
+          free-la
+        </a>
+      </div>
+    </header>
+
+    <main class="container bv-conteudo">
+      <p class="bv-selo">
+        <span aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        Conta criada
+      </p>
+
+      <h1 id="bv-titulo">Bem-vindo ao Free-la.</h1>
+      <p class="bv-texto">Sua conta serve para as duas coisas. Escolha por onde quer começar, dá para fazer a outra a qualquer momento.</p>
+
+      <ul class="bv-opcoes">
+        <li>
+          <a href="home.html" class="opcao opcao-laranja">
+            <span class="opcao-icone" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </span>
+            <h2>Quero trabalhar</h2>
+            <p id="bv-texto-trabalhar">Veja os bicos abertos perto de você e candidate-se aos que combinam com seu tempo.</p>
+            <span class="opcao-acao">Procurar bicos</span>
+          </a>
+        </li>
+        <li>
+          <a href="publicar-vaga.html" class="opcao">
+            <span class="opcao-icone" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+            <h2>Preciso de alguém</h2>
+            <p>Conte o que precisa, quando e quanto paga. Quem estiver disponível se candidata.</p>
+            <span class="opcao-acao">Publicar minha primeira vaga</span>
+          </a>
+        </li>
+      </ul>
+
+      <p class="bv-depois">Prefere só dar uma olhada? <a href="home.html">Ir para o início</a></p>
+    </main>
+  </div>
+
+  <script src="../assets/js/pages/boas-vindas.js"></script>
+</body>
+</html>

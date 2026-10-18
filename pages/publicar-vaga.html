@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publicar vaga | Free-la</title>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>protegerPagina();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/forms.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <link rel="stylesheet" href="../assets/css/pages/publicar.css">
+</head>
+<body data-pagina="publicar">
+
+  <header class="app-topo">
+    <div class="container">
+      <a href="home.html" class="logo" aria-label="Free-la, vagas abertas">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
+        </svg>
+        free-la
+      </a>
+      <nav class="app-nav" aria-label="Principal">
+        <a href="home.html" data-nav="home">Vagas</a>
+        <a href="publicar-vaga.html" data-nav="publicar">Publicar vaga</a>
+      </nav>
+      <div class="usuario">
+        <a href="perfil.html" class="usuario-link" data-nav="perfil" aria-label="Meu perfil">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-nome" id="usuario-nome"></span>
+        </a>
+        <button type="button" class="btn btn-contorno" id="btn-sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="faixa">
+      <div class="container">
+        <div>
+          <h1>Publicar vaga</h1>
+          <p>Quanto mais claro o pedido, mais rápido aparece alguém certo.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="container publicar">
+      <form class="form-vaga" id="form-vaga" novalidate>
+        <div class="alerta" id="alerta-limite" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <span>Você já tem 5 vagas ativas. Conclua uma delas na <a href="perfil.html#caixa">caixa de entrada</a> para publicar outra.</span>
+        </div>
+
+        <fieldset class="form-bloco">
+          <legend class="sr-only">O serviço</legend>
+          <h2 aria-hidden="true">O serviço</h2>
+
+          <div class="campo">
+            <div class="campo-topo">
+              <label for="titulo">Título da vaga</label>
+              <span class="contador" id="contador-titulo">0/60</span>
+            </div>
+            <input type="text" id="titulo" maxlength="60" placeholder="Ex.: Ajudante para mudança" aria-describedby="titulo-erro">
+            <p class="campo-erro" id="titulo-erro"></p>
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" aria-describedby="categoria-erro">
+              <option value="">Escolha uma categoria</option>
+            </select>
+            <p class="campo-erro" id="categoria-erro"></p>
+          </div>
+
+          <div class="campo">
+            <div class="campo-topo">
+              <label for="descricao">O que precisa ser feito</label>
+              <span class="contador" id="contador-descricao">0/400</span>
+            </div>
+            <textarea id="descricao" maxlength="400" placeholder="Conte os detalhes: tamanho do serviço, se precisa levar material, se precisa de experiência." aria-describedby="descricao-erro"></textarea>
+            <p class="campo-erro" id="descricao-erro"></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-bloco">
+          <legend class="sr-only">Onde e quando</legend>
+          <h2 aria-hidden="true">Onde e quando</h2>
+
+          <div class="campos-linha">
+            <div class="campo">
+              <label for="cidade">Cidade</label>
+              <input type="text" id="cidade" maxlength="50" list="cidades" aria-describedby="cidade-erro">
+              <datalist id="cidades"></datalist>
+              <p class="campo-erro" id="cidade-erro"></p>
+            </div>
+
+            <div class="campo">
+              <label for="bairro">Bairro</label>
+              <input type="text" id="bairro" maxlength="50" placeholder="Ex.: Savassi" aria-describedby="bairro-erro">
+              <p class="campo-erro" id="bairro-erro"></p>
+              <label class="marcar">
+                <input type="checkbox" id="remoto">
+                Pode ser feito a distância
+              </label>
+            </div>
+          </div>
+
+          <div class="campo campo-mapa" id="campo-mapa">
+            <div class="campo-topo">
+              <span class="rotulo-mapa" id="rotulo-mapa">Local no mapa</span>
+              <button type="button" class="link-centro" id="usar-centro">Usar o centro da cidade</button>
+            </div>
+            <p class="campo-ajuda" id="mapa-ajuda">Clique no mapa onde vai ser o serviço. Quem vê a vaga só enxerga a região, nunca o ponto exato.</p>
+            <div class="mapa mapa-publicar" id="mapa-publicar" aria-labelledby="rotulo-mapa" aria-describedby="mapa-ajuda mapa-erro"></div>
+            <p class="campo-erro" id="mapa-erro"></p>
+          </div>
+
+          <div class="campos-linha">
+            <div class="campo">
+              <label for="data">Dia</label>
+              <input type="date" id="data" aria-describedby="data-erro">
+              <p class="campo-erro" id="data-erro"></p>
+            </div>
+
+            <div class="campo">
+              <label for="hora">Horário</label>
+              <input type="time" id="hora" aria-describedby="hora-erro">
+              <p class="campo-erro" id="hora-erro"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-bloco">
+          <legend class="sr-only">Pagamento</legend>
+          <h2 aria-hidden="true">Pagamento</h2>
+
+          <div class="campos-linha">
+            <div class="campo">
+              <label for="valor">Quanto você paga</label>
+              <div class="campo-dinheiro">
+                <span aria-hidden="true">R$</span>
+                <input type="number" id="valor" min="10" max="10000" step="1" inputmode="numeric" placeholder="150" aria-describedby="valor-erro">
+              </div>
+              <p class="campo-erro" id="valor-erro"></p>
+            </div>
+
+            <div class="campo">
+              <label for="unidade">Forma de cobrança</label>
+              <select id="unidade">
+                <option value="valor fechado">Valor fechado</option>
+                <option value="por dia">Por dia</option>
+                <option value="por hora">Por hora</option>
+              </select>
+              <p class="campo-erro" id="unidade-erro"></p>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-acoes">
+          <button type="submit" class="btn btn-primario btn-grande">Publicar vaga</button>
+          <a href="home.html" class="btn btn-contorno btn-grande">Cancelar</a>
+        </div>
+      </form>
+
+      <aside class="previa" aria-label="Prévia da vaga">
+        <h2>Prévia</h2>
+        <p>É assim que sua vaga aparece para quem procura bico.</p>
+        <div class="previa-palco">
+          <div id="previa-ficha"></div>
+          <div class="previa-descricao">
+            <strong>Detalhes</strong>
+            <p id="previa-descricao"></p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/leaflet/leaflet.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/mapa.js"></script>
+  <script src="../assets/js/validacao.js"></script>
+  <script src="../assets/js/pages/publicar-vaga.js"></script>
+</body>
+</html>

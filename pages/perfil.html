@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil | Free-la</title>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>protegerPagina();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/forms.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <link rel="stylesheet" href="../assets/css/pages/perfil.css">
+</head>
+<body data-pagina="perfil">
+
+  <header class="app-topo">
+    <div class="container">
+      <a href="home.html" class="logo" aria-label="Free-la, início">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
+        </svg>
+        free-la
+      </a>
+      <nav class="app-nav" aria-label="Principal">
+        <a href="home.html" data-nav="home">Vagas</a>
+        <a href="publicar-vaga.html" data-nav="publicar">Publicar vaga</a>
+      </nav>
+      <div class="usuario">
+        <a href="perfil.html" class="usuario-link" data-nav="perfil-proprio" aria-label="Meu perfil">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-nome" id="usuario-nome"></span>
+        </a>
+        <button type="button" class="btn btn-contorno" id="btn-sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container perfil" id="perfil">
+    <aside class="perfil-lateral" id="perfil-lateral" aria-label="Resumo do perfil"></aside>
+
+    <section class="perfil-principal">
+      <div class="abas" role="tablist" aria-label="Seções do perfil">
+        <button type="button" class="aba" role="tab" id="aba-visao" aria-controls="painel-visao" data-aba="visao">
+          Visão geral
+        </button>
+        <button type="button" class="aba" role="tab" id="aba-trabalhos" aria-controls="painel-trabalhos" data-aba="trabalhos">
+          Trabalhos <span class="aba-contagem" id="contagem-trabalhos"></span>
+        </button>
+        <button type="button" class="aba" role="tab" id="aba-avaliacoes" aria-controls="painel-avaliacoes" data-aba="avaliacoes">
+          Avaliações <span class="aba-contagem" id="contagem-avaliacoes"></span>
+        </button>
+        <button type="button" class="aba so-dono" role="tab" id="aba-caixa" aria-controls="painel-caixa" data-aba="caixa">
+          Caixa de entrada <span class="aba-contagem alerta-aba" id="contagem-caixa"></span>
+        </button>
+        <button type="button" class="aba so-dono" role="tab" id="aba-candidaturas" aria-controls="painel-candidaturas" data-aba="candidaturas">
+          Minhas candidaturas <span class="aba-contagem" id="contagem-candidaturas"></span>
+        </button>
+      </div>
+
+      <div class="painel-aba" role="tabpanel" id="painel-visao" aria-labelledby="aba-visao" tabindex="0"></div>
+      <div class="painel-aba" role="tabpanel" id="painel-trabalhos" aria-labelledby="aba-trabalhos" tabindex="0" hidden></div>
+      <div class="painel-aba" role="tabpanel" id="painel-avaliacoes" aria-labelledby="aba-avaliacoes" tabindex="0" hidden></div>
+      <div class="painel-aba" role="tabpanel" id="painel-caixa" aria-labelledby="aba-caixa" tabindex="0" hidden></div>
+      <div class="painel-aba" role="tabpanel" id="painel-candidaturas" aria-labelledby="aba-candidaturas" tabindex="0" hidden></div>
+    </section>
+  </main>
+
+  <dialog class="modal" id="modal-avaliar" aria-labelledby="avaliar-titulo">
+    <form method="dialog" id="form-avaliar" novalidate>
+      <div class="modal-topo">
+        <h2 id="avaliar-titulo">Avaliar</h2>
+        <button type="button" class="modal-fechar" data-fechar aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="modal-corpo">
+        <p class="meta" id="avaliar-servico"></p>
+
+        <fieldset class="estrelas-escolha" id="estrelas-escolha">
+          <legend class="sr-only">Nota de 1 a 5</legend>
+        </fieldset>
+        <p class="nota-legenda" id="nota-legenda" aria-live="polite">Escolha de 1 a 5 estrelas.</p>
+
+        <div class="campo">
+          <label for="avaliar-comentario">Comentário</label>
+          <textarea id="avaliar-comentario" maxlength="300" placeholder="Como foi? Pontualidade, cuidado, comunicação." aria-describedby="avaliar-erro"></textarea>
+          <p class="campo-erro" id="avaliar-erro"></p>
+        </div>
+      </div>
+      <div class="modal-rodape">
+        <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primario" value="enviar">Enviar avaliação</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="modal-editar" aria-labelledby="editar-titulo">
+    <form method="dialog" id="form-editar" novalidate>
+      <div class="modal-topo">
+        <h2 id="editar-titulo">Editar perfil</h2>
+        <button type="button" class="modal-fechar" data-fechar aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-corpo">
+        <div class="editar-foto">
+          <span id="editar-foto-previa"></span>
+          <div>
+            <div class="editar-foto-acoes">
+              <label class="btn btn-contorno">
+                Trocar foto
+                <input type="file" id="editar-foto" accept="image/png, image/jpeg, image/webp">
+              </label>
+              <button type="button" class="btn btn-texto" id="remover-foto">Remover</button>
+            </div>
+            <p class="campo-ajuda">JPG ou PNG. A imagem é reduzida automaticamente.</p>
+          </div>
+        </div>
+
+        <div class="campos-linha">
+          <div class="campo">
+            <label for="editar-nome">Nome</label>
+            <input type="text" id="editar-nome" maxlength="60" autocomplete="name" aria-describedby="editar-nome-ajuda editar-nome-erro">
+            <p class="campo-ajuda" id="editar-nome-ajuda"></p>
+            <p class="campo-erro" id="editar-nome-erro"></p>
+          </div>
+          <div class="campo">
+            <label for="editar-cidade">Cidade</label>
+            <input type="text" id="editar-cidade" maxlength="50" list="cidades" aria-describedby="editar-cidade-erro">
+            <datalist id="cidades"></datalist>
+            <p class="campo-erro" id="editar-cidade-erro"></p>
+          </div>
+        </div>
+
+        <div class="campo">
+          <div class="campo-topo">
+            <label for="editar-titulo-prof">Título profissional</label>
+            <span class="contador" id="contador-titulo-prof">0/60</span>
+          </div>
+          <input type="text" id="editar-titulo-prof" maxlength="60" placeholder="Ex.: Eletricista e montador de móveis">
+          <p class="campo-erro"></p>
+        </div>
+
+        <div class="campo">
+          <div class="campo-topo">
+            <label for="editar-sobre">Sobre você</label>
+            <span class="contador" id="contador-sobre">0/500</span>
+          </div>
+          <textarea id="editar-sobre" maxlength="500" placeholder="Sua experiência, como você trabalha e quando está disponível."></textarea>
+          <p class="campo-erro"></p>
+        </div>
+
+        <h3 class="secao-modal">O que você sabe fazer</h3>
+        <div class="habilidades-edicao" id="editar-habilidades"></div>
+
+        <h3 class="secao-modal">Experiência</h3>
+        <div id="lista-experiencias"></div>
+        <button type="button" class="btn btn-contorno" id="adicionar-experiencia">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar experiência
+        </button>
+      </div>
+
+      <div class="modal-rodape">
+        <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
+        <button type="submit" class="btn btn-primario" value="salvar">Salvar perfil</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/validacao.js"></script>
+  <script src="../assets/js/pages/perfil.js"></script>
+  <script src="../assets/js/pages/perfil-editar.js"></script>
+</body>
+</html>

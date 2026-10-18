@@ -30,7 +30,7 @@
 
 .hero h1 {
   max-width: 11ch;
-  font-size: clamp(2.8rem, 7.4vw, 5.6rem);
+  font-size: clamp(2.8rem, 6.6vw, 7.5rem);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -54,7 +54,7 @@
   position: relative;
   display: grid;
   gap: 18px;
-  max-width: 460px;
+  max-width: 520px;
   width: 100%;
   margin: 0 auto;
   list-style: none;

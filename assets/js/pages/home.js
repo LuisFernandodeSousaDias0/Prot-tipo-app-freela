@@ -1,121 +1,215 @@
-const usuario = lerSessao();
-const vagas = lerVagas();
-let candidaturas = usuario ? lerCandidaturas(usuario.id) : [];
+const usuario = montarCabecalho();
+
+const TODAS_CIDADES = "todas";
 
 const estado = {
   busca: "",
-  categoria: "Todas"
+  categoria: "Todas",
+  cidade: usuario ? encontrarCidade(usuario.cidade) || "Belo Horizonte" : "Belo Horizonte",
+  vista: "lista"
 };
 
-const elChips = document.getElementById("chips");
+let mapa = null;
+let camadaVagas = null;
+
+const elCategorias = document.getElementById("categorias");
 const elLista = document.getElementById("lista-vagas");
 const elInfo = document.getElementById("resultado-info");
 const elVazio = document.getElementById("vazio");
 const elBusca = document.getElementById("busca");
+const elCidade = document.getElementById("filtro-cidade");
 
-const ICONE_LOCAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
-const ICONE_DATA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
-const ICONE_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-
-function escapar(texto) {
-  const div = document.createElement("div");
-  div.textContent = texto;
-  return div.innerHTML;
+function vagasAbertas() {
+  return lerVagas()
+    .filter((vaga) => vaga.status === "aberta")
+    .sort((a, b) => b.id - a.id);
 }
 
-function normalizar(texto) {
-  return texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function ehRemota(vaga) {
+  return vaga.bairro === "Remoto";
 }
 
-function formatarValor(valor) {
-  return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+function naCidade(vaga, cidade) {
+  return cidade === TODAS_CIDADES || ehRemota(vaga) || mesmaCidade(vaga.cidade || "Belo Horizonte", cidade);
 }
 
-function preencherCabecalho() {
-  const primeiroNome = usuario.nome.split(" ")[0];
-  const iniciais = usuario.nome
-    .split(" ")
-    .slice(0, 2)
-    .map((parte) => parte[0])
-    .join("")
-    .toUpperCase();
+function textoCidade(cidade) {
+  return cidade === TODAS_CIDADES ? "na Grande BH" : `em ${cidade}`;
+}
 
-  document.getElementById("avatar").textContent = iniciais;
-  document.getElementById("usuario-nome").textContent = usuario.nome;
-  document.getElementById("saudacao-titulo").textContent = `Olá, ${primeiroNome}.`;
+function saudacaoDoHorario() {
+  const hora = new Date().getHours();
+  if (hora < 5) return "Boa noite";
+  if (hora < 12) return "Bom dia";
+  if (hora < 18) return "Boa tarde";
+  return "Boa noite";
+}
+
+function preencherBanner() {
+  const cidade = encontrarCidade(usuario.cidade) || "Belo Horizonte";
+  const daCidade = vagasAbertas().filter((vaga) => naCidade(vaga, cidade) && vaga.autorId !== usuario.id);
+  const total = daCidade.length;
+
+  document.getElementById("saudacao-titulo").textContent =
+    `${saudacaoDoHorario()}, ${primeiroNome(usuario.nome)}.`;
   document.getElementById("saudacao-texto").textContent =
-    `${vagas.length} bicos abertos em BH agora.`;
+    total
+      ? `Tem ${total} ${total === 1 ? "bico aberto" : "bicos abertos"} em ${cidade} e a distância. O próximo pode começar hoje.`
+      : `Ainda não tem bicos abertos em ${cidade}. Que tal publicar o primeiro?`;
+
+  const pendentes = contarPendentesParaAutor(usuario.id);
+  if (pendentes > 0) {
+    document.getElementById("alerta-numero").textContent = pendentes;
+    document.getElementById("alerta-texto").textContent =
+      pendentes === 1 ? "pessoa se candidatou às suas vagas." : "pessoas se candidataram às suas vagas.";
+    document.getElementById("banner-alerta").hidden = false;
+  }
+
+  const novas = daCidade.slice(0, 2);
+  document.querySelector(".banner-novas").hidden = novas.length === 0;
+  document.getElementById("lista-novas").innerHTML = novas
+    .map((vaga) => `<li>${htmlFichaLink(vaga, usuario)}</li>`)
+    .join("");
 }
 
-function renderizarChips() {
-  const categorias = ["Todas", ...new Set(vagas.map((vaga) => vaga.categoria))];
+function mostrarAviso() {
+  const mensagem = pegarAviso();
+  if (!mensagem) return;
 
-  elChips.innerHTML = categorias
+  document.getElementById("aviso-texto").textContent = mensagem;
+  document.getElementById("aviso").hidden = false;
+}
+
+function renderizarCategorias() {
+  const categorias = ["Todas", ...CATEGORIAS];
+
+  elCategorias.innerHTML = categorias
     .map((categoria) => `
       <li>
-        <button type="button" class="chip" data-categoria="${escapar(categoria)}" aria-pressed="${categoria === estado.categoria}">
-          ${escapar(categoria)}
+        <button type="button" class="categoria-btn" data-categoria="${escapar(categoria)}" aria-pressed="${categoria === estado.categoria}">
+          <span>${ICONES_CATEGORIA[categoria]}</span>
+          <span>${categoria === "Todas" ? "Todas as vagas" : escapar(categoria)}</span>
         </button>
       </li>
     `)
     .join("");
 }
 
+function renderizarCidades() {
+  const opcoes = CIDADES.map((cidade) => {
+    const total = vagasAbertas().filter((vaga) => !ehRemota(vaga) && mesmaCidade(vaga.cidade || "Belo Horizonte", cidade)).length;
+    const sua = mesmaCidade(cidade, usuario.cidade) ? ", sua cidade" : "";
+    return `<option value="${escapar(cidade)}">${escapar(cidade)}${sua} (${total})</option>`;
+  });
+
+  elCidade.innerHTML = `${opcoes.join("")}<option value="${TODAS_CIDADES}">Todas as cidades</option>`;
+  elCidade.value = estado.cidade;
+}
+
 function filtrarVagas() {
   const termo = normalizar(estado.busca.trim());
 
-  return vagas.filter((vaga) => {
+  return vagasAbertas().filter((vaga) => {
     const naCategoria = estado.categoria === "Todas" || vaga.categoria === estado.categoria;
-    const textoVaga = normalizar(`${vaga.titulo} ${vaga.bairro} ${vaga.categoria}`);
-    return naCategoria && textoVaga.includes(termo);
+    const texto = normalizar(`${vaga.titulo} ${vaga.bairro} ${vaga.categoria} ${vaga.cidade || ""}`);
+    return naCategoria && naCidade(vaga, estado.cidade) && texto.includes(termo);
   });
 }
 
-function htmlBotaoCandidatar(vagaId) {
-  const enviada = candidaturas.includes(vagaId);
+function preencherVazio() {
+  const temOutroFiltro = estado.busca.trim() || estado.categoria !== "Todas";
+  const titulo = document.getElementById("vazio-titulo");
+  const texto = document.getElementById("vazio-texto");
+  const botao = document.getElementById("btn-limpar");
 
-  return `
-    <button type="button" class="btn btn-primario btn-candidatar" data-vaga="${vagaId}" aria-pressed="${enviada}">
-      ${enviada ? `${ICONE_CHECK} Candidatura enviada` : "Candidatar-se"}
-    </button>
-  `;
+  if (temOutroFiltro) {
+    titulo.textContent = `Nenhuma vaga com esse filtro ${textoCidade(estado.cidade)}`;
+    texto.textContent = "Tente outra palavra ou veja todas as categorias.";
+    botao.textContent = "Limpar filtros";
+    botao.dataset.alvo = "filtros";
+  } else {
+    titulo.textContent = `Ainda não tem vagas ${textoCidade(estado.cidade)}`;
+    texto.textContent = "Veja as vagas de outras cidades da Grande BH ou publique a primeira daqui.";
+    botao.textContent = "Ver todas as cidades";
+    botao.dataset.alvo = "cidades";
+  }
 }
 
 function renderizarLista() {
   const filtradas = filtrarVagas();
 
   elVazio.hidden = filtradas.length > 0;
-  elInfo.hidden = filtradas.length === 0;
-  elInfo.innerHTML = `<strong>${filtradas.length}</strong> ${filtradas.length === 1 ? "vaga encontrada" : "vagas encontradas"}`;
+  if (!filtradas.length) preencherVazio();
+
+  elInfo.innerHTML = `<strong>${filtradas.length}</strong> ${filtradas.length === 1 ? "vaga" : "vagas"} ${escapar(textoCidade(estado.cidade))}, contando as feitas a distância`;
 
   elLista.innerHTML = filtradas
-    .map((vaga) => `
-      <li>
-        <article class="ficha">
-          <h3 class="ficha-titulo">${escapar(vaga.titulo)}</h3>
-          <p class="ficha-valor">${formatarValor(vaga.valor)}<small>${escapar(vaga.unidade)}</small></p>
-          <span class="ficha-categoria">${escapar(vaga.categoria)}</span>
-          <ul class="ficha-info">
-            <li>${ICONE_LOCAL} ${escapar(vaga.bairro)}</li>
-            <li>${ICONE_DATA} ${escapar(vaga.quando)}</li>
-          </ul>
-          <div class="ficha-rodape">
-            <p class="ficha-autor">Publicada por <strong>${escapar(vaga.autor)}</strong></p>
-            ${htmlBotaoCandidatar(vaga.id)}
-          </div>
-        </article>
-      </li>
-    `)
+    .map((vaga) => `<li>${htmlFichaLink(vaga, usuario)}</li>`)
+    .join("");
+
+  renderizarMapa(filtradas);
+}
+
+function renderizarMapa(filtradas) {
+  if (estado.vista !== "mapa") return;
+
+  const elMapa = document.getElementById("mapa-vagas");
+  const cidadeCentro = estado.cidade === TODAS_CIDADES ? "Belo Horizonte" : estado.cidade;
+
+  if (!mapa) {
+    mapa = criarMapa(elMapa, { centro: centroDaCidade(cidadeCentro), zoom: 12 });
+    camadaVagas = L.layerGroup().addTo(mapa);
+  }
+
+  mapa.invalidateSize();
+  camadaVagas.clearLayers();
+
+  const presenciais = filtradas.filter((vaga) => !ehRemota(vaga) && pontoValido(vaga.lat, vaga.lng));
+  const pontos = presenciais.map((vaga) => {
+    const ponto = pontoAproximado(vaga);
+    L.marker(ponto, { icon: iconeVaga(vaga.autorId === usuario.id), title: vaga.titulo, alt: vaga.titulo })
+      .bindPopup(htmlPopupVaga(vaga))
+      .addTo(camadaVagas);
+    return ponto;
+  });
+
+  if (pontos.length) {
+    mapa.fitBounds(L.latLngBounds(pontos), { padding: [48, 48], maxZoom: 14 });
+  } else {
+    mapa.setView(centroDaCidade(cidadeCentro), 12);
+  }
+
+  const remotas = filtradas.filter(ehRemota);
+  document.getElementById("bloco-remotas").hidden = remotas.length === 0;
+  document.getElementById("lista-remotas").innerHTML = remotas
+    .map((vaga) => `<li>${htmlFichaLink(vaga, usuario)}</li>`)
     .join("");
 }
 
-elChips.addEventListener("click", (evento) => {
-  const chip = evento.target.closest(".chip");
-  if (!chip) return;
+function trocarVista(vista) {
+  estado.vista = vista;
 
-  estado.categoria = chip.dataset.categoria;
-  elChips.querySelectorAll(".chip").forEach((botao) => {
-    botao.setAttribute("aria-pressed", String(botao === chip));
+  document.querySelectorAll("[data-vista]").forEach((botao) => {
+    botao.setAttribute("aria-pressed", String(botao.dataset.vista === vista));
+  });
+
+  elLista.hidden = vista === "mapa";
+  document.getElementById("vista-mapa").hidden = vista !== "mapa";
+
+  try {
+    localStorage.setItem("freela_vista", vista);
+  } catch (erro) {}
+
+  renderizarLista();
+}
+
+elCategorias.addEventListener("click", (evento) => {
+  const botao = evento.target.closest(".categoria-btn");
+  if (!botao) return;
+
+  estado.categoria = botao.dataset.categoria;
+  elCategorias.querySelectorAll(".categoria-btn").forEach((item) => {
+    item.setAttribute("aria-pressed", String(item === botao));
   });
   renderizarLista();
 });
@@ -125,35 +219,44 @@ elBusca.addEventListener("input", () => {
   renderizarLista();
 });
 
-elLista.addEventListener("click", (evento) => {
-  const botao = evento.target.closest(".btn-candidatar");
-  if (!botao) return;
-
-  const vagaId = Number(botao.dataset.vaga);
-
-  if (candidaturas.includes(vagaId)) {
-    candidaturas = candidaturas.filter((id) => id !== vagaId);
-  } else {
-    candidaturas.push(vagaId);
-  }
-
-  salvarCandidaturas(usuario.id, candidaturas);
-  botao.outerHTML = htmlBotaoCandidatar(vagaId);
+document.getElementById("form-busca").addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  estado.busca = elBusca.value;
+  renderizarLista();
+  document.getElementById("vagas").scrollIntoView({ behavior: "smooth" });
 });
 
-document.getElementById("btn-limpar").addEventListener("click", () => {
+document.querySelector(".alternar-vista").addEventListener("click", (evento) => {
+  const botao = evento.target.closest("[data-vista]");
+  if (botao) trocarVista(botao.dataset.vista);
+});
+
+elCidade.addEventListener("change", () => {
+  estado.cidade = elCidade.value;
+  renderizarLista();
+});
+
+document.getElementById("btn-limpar").addEventListener("click", (evento) => {
+  if (evento.currentTarget.dataset.alvo === "cidades") {
+    estado.cidade = TODAS_CIDADES;
+    elCidade.value = TODAS_CIDADES;
+    renderizarLista();
+    elCidade.focus();
+    return;
+  }
+
   estado.busca = "";
   estado.categoria = "Todas";
   elBusca.value = "";
-  renderizarChips();
+  renderizarCategorias();
   renderizarLista();
   elBusca.focus();
 });
 
-document.getElementById("btn-sair").addEventListener("click", sair);
-
 if (usuario) {
-  preencherCabecalho();
-  renderizarChips();
-  renderizarLista();
+  preencherBanner();
+  mostrarAviso();
+  renderizarCategorias();
+  renderizarCidades();
+  trocarVista(localStorage.getItem("freela_vista") === "mapa" ? "mapa" : "lista");
 }

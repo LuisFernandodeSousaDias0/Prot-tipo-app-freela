@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vagas abertas | Free-la</title>
+  <title>Início | Free-la</title>
 
   <script src="../assets/js/storage.js"></script>
   <script src="../assets/js/auth.js"></script>
@@ -11,71 +11,135 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/forms.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
   <link rel="stylesheet" href="../assets/css/pages/home.css">
 </head>
-<body>
+<body data-pagina="home">
 
   <header class="app-topo">
     <div class="container">
-      <a href="home.html" class="logo" aria-label="Free-la, vagas abertas">
+      <a href="home.html" class="logo" aria-label="Free-la, início">
         <svg viewBox="0 0 32 32" aria-hidden="true">
           <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
           <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
         </svg>
         free-la
       </a>
-
+      <nav class="app-nav" aria-label="Principal">
+        <a href="home.html" data-nav="home">Vagas</a>
+        <a href="publicar-vaga.html" data-nav="publicar">Publicar vaga</a>
+      </nav>
       <div class="usuario">
-        <span class="avatar" id="avatar" aria-hidden="true"></span>
-        <span class="usuario-nome" id="usuario-nome"></span>
+        <a href="perfil.html" class="usuario-link" data-nav="perfil" aria-label="Meu perfil">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-nome" id="usuario-nome"></span>
+        </a>
         <button type="button" class="btn btn-contorno" id="btn-sair">Sair</button>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="saudacao">
+    <section class="banner">
       <div class="container">
         <div>
           <h1 id="saudacao-titulo">Olá!</h1>
-          <p id="saudacao-texto">Veja os bicos abertos em BH.</p>
+          <p class="banner-texto" id="saudacao-texto"></p>
+          <div class="banner-acoes">
+            <a href="publicar-vaga.html" class="btn btn-escuro btn-grande">Publicar vaga</a>
+            <a href="perfil.html" class="btn btn-contorno btn-grande">Meu perfil</a>
+          </div>
+          <a href="perfil.html#caixa" class="banner-alerta" id="banner-alerta" hidden>
+            <span class="contagem" id="alerta-numero"></span>
+            <span><span id="alerta-texto"></span> <u>Ver caixa de entrada</u></span>
+          </a>
         </div>
-        <a href="publicar-vaga.html" class="btn btn-primario btn-grande">Publicar vaga</a>
+
+        <div class="banner-novas" aria-labelledby="titulo-novas">
+          <h2 id="titulo-novas">Acabaram de chegar</h2>
+          <ul id="lista-novas"></ul>
+        </div>
       </div>
     </section>
 
-    <div class="container painel">
-      <aside class="filtros" aria-label="Filtros">
-        <div class="busca">
-          <label for="busca" class="sr-only">Buscar vagas</label>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="search" id="busca" placeholder="Serviço ou bairro">
+    <div class="container">
+      <p class="aviso home-aviso" id="aviso" role="status" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        <span id="aviso-texto"></span>
+      </p>
+    </div>
+
+    <section class="busca-secao" aria-labelledby="titulo-categorias">
+      <div class="container">
+        <form class="busca-grande" id="form-busca" role="search">
+          <label for="busca">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span class="sr-only">Buscar vagas</span>
+            <input type="search" id="busca" placeholder="O que você procura? Ex.: montagem, Savassi">
+          </label>
+          <button type="submit" class="btn btn-primario">Buscar</button>
+        </form>
+
+        <h2 class="categorias-titulo" id="titulo-categorias">Categorias</h2>
+        <ul class="categorias-icones" id="categorias"></ul>
+      </div>
+    </section>
+
+    <section class="vagas-secao" id="vagas" aria-labelledby="titulo-vagas">
+      <div class="container">
+        <div class="vagas-topo">
+          <div>
+            <h2 id="titulo-vagas">Vagas abertas</h2>
+            <p id="resultado-info" aria-live="polite"></p>
+          </div>
+          <div class="vagas-controles">
+            <div class="alternar-vista" role="group" aria-label="Como ver as vagas">
+              <button type="button" data-vista="lista" aria-pressed="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
+                Lista
+              </button>
+              <button type="button" data-vista="mapa" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>
+                Mapa
+              </button>
+            </div>
+          <label class="filtro-cidade">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <span class="sr-only">Mostrar vagas de</span>
+            <select id="filtro-cidade"></select>
+          </label>
+          </div>
         </div>
 
-        <div>
-          <h2 class="filtros-titulo" id="titulo-categorias">Categorias</h2>
-          <ul class="chips" id="chips" aria-labelledby="titulo-categorias"></ul>
+        <div class="vista-mapa" id="vista-mapa" hidden>
+          <div class="mapa mapa-home" id="mapa-vagas" aria-label="Mapa das vagas presenciais"></div>
+          <p class="mapa-nota">As posições são aproximadas. O endereço exato é combinado depois que alguém é escolhido.</p>
+          <div class="remotas" id="bloco-remotas">
+            <h3>Vagas a distância</h3>
+            <p>Essas vagas não têm lugar no mapa porque podem ser feitas de qualquer cidade.</p>
+            <ul class="lista-vagas" id="lista-remotas"></ul>
+          </div>
         </div>
-      </aside>
-
-      <section aria-labelledby="titulo-lista">
-        <h2 class="sr-only" id="titulo-lista">Lista de vagas</h2>
-        <p class="resultado-info" id="resultado-info" aria-live="polite"></p>
 
         <ul class="lista-vagas" id="lista-vagas"></ul>
 
         <div class="vazio" id="vazio" hidden>
-          <h2>Nenhuma vaga com esse filtro</h2>
-          <p>Tente outra palavra ou veja todas as categorias.</p>
-          <button type="button" class="btn btn-contorno" id="btn-limpar">Ver todas as vagas</button>
+          <h3 id="vazio-titulo">Nenhuma vaga com esse filtro</h3>
+          <p id="vazio-texto">Tente outra palavra ou veja todas as categorias.</p>
+          <button type="button" class="btn btn-contorno" id="btn-limpar">Limpar filtros</button>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </main>
 
+  <script src="../assets/vendor/leaflet/leaflet.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/mapa.js"></script>
   <script src="../assets/js/pages/home.js"></script>
 </body>
 </html>

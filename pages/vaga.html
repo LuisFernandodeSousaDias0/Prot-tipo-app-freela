@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaga | Free-la</title>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>protegerPagina();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <link rel="stylesheet" href="../assets/css/pages/vaga.css">
+</head>
+<body data-pagina="home">
+
+  <header class="app-topo">
+    <div class="container">
+      <a href="home.html" class="logo" aria-label="Free-la, início">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
+        </svg>
+        free-la
+      </a>
+      <nav class="app-nav" aria-label="Principal">
+        <a href="home.html" data-nav="home">Vagas</a>
+        <a href="publicar-vaga.html" data-nav="publicar">Publicar vaga</a>
+      </nav>
+      <div class="usuario">
+        <a href="perfil.html" class="usuario-link" data-nav="perfil" aria-label="Meu perfil">
+          <span class="avatar" id="avatar" aria-hidden="true"></span>
+          <span class="usuario-nome" id="usuario-nome"></span>
+        </a>
+        <button type="button" class="btn btn-contorno" id="btn-sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="vaga">
+    <section class="vaga-topo">
+      <div class="container">
+        <a href="home.html#vagas" class="voltar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          Voltar para as vagas
+        </a>
+        <div id="vaga-cabecalho"></div>
+      </div>
+    </section>
+
+    <div class="container vaga-corpo">
+      <div>
+        <section class="secao-vaga" aria-labelledby="titulo-descricao">
+          <h2 id="titulo-descricao">O que precisa ser feito</h2>
+          <p class="vaga-descricao" id="vaga-descricao"></p>
+        </section>
+
+        <section class="secao-vaga" aria-labelledby="titulo-detalhes">
+          <h2 id="titulo-detalhes">Detalhes</h2>
+          <ul class="detalhes" id="vaga-detalhes"></ul>
+        </section>
+
+        <section class="secao-vaga" aria-labelledby="titulo-local">
+          <h2 id="titulo-local">Onde fica</h2>
+          <div id="local-vaga"></div>
+        </section>
+      </div>
+
+      <aside class="lateral-vaga" aria-label="Candidatura e quem publicou">
+        <div class="cartao-acao" id="cartao-acao" aria-live="polite"></div>
+        <div class="cartao-autor" id="cartao-autor"></div>
+      </aside>
+
+      <section class="secao-vaga" id="secao-parecidas" aria-labelledby="titulo-parecidas">
+        <h2 id="titulo-parecidas">Vagas parecidas</h2>
+        <ul class="parecidas" id="vagas-parecidas"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/vendor/leaflet/leaflet.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/mapa.js"></script>
+  <script src="../assets/js/pages/vaga.js"></script>
+</body>
+</html>

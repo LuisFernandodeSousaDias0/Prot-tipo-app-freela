@@ -1,0 +1,267 @@
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.campo {
+  margin-bottom: 22px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio);
+  background: var(--branco);
+  font-size: 1rem;
+  transition: box-shadow 0.15s ease;
+}
+
+.campo textarea {
+  min-height: 120px;
+  padding: 14px 16px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.campo select {
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b1608' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 14px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  cursor: pointer;
+}
+
+.campo input:disabled,
+.campo input[readonly] {
+  border-style: dashed;
+  background: #faf6f3;
+  color: var(--tinta-suave);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: #a8968a;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--laranja-linha);
+}
+
+.campo.erro input,
+.campo.erro select,
+.campo.erro textarea {
+  border-color: var(--erro);
+}
+
+.campo.erro input:focus,
+.campo.erro select:focus,
+.campo.erro textarea:focus {
+  box-shadow: 0 0 0 4px #f6d3d4;
+}
+
+.campo-ajuda {
+  margin-top: 8px;
+  color: var(--tinta-suave);
+  font-size: 0.9rem;
+}
+
+.campo.erro .campo-ajuda {
+  display: none;
+}
+
+.campo-erro {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--erro);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.campo.erro .campo-erro {
+  display: flex;
+}
+
+.campo-senha {
+  position: relative;
+}
+
+.campo-senha input {
+  padding-right: 56px;
+}
+
+.btn-olho {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--raio-sm);
+  background: transparent;
+  color: var(--tinta-suave);
+}
+
+.btn-olho:hover {
+  background: var(--laranja-claro);
+  color: var(--tinta);
+}
+
+.btn-olho svg {
+  width: 22px;
+  height: 22px;
+}
+
+.btn-olho .olho-fechado,
+.btn-olho[aria-pressed="true"] .olho-aberto {
+  display: none;
+}
+
+.btn-olho[aria-pressed="true"] .olho-fechado {
+  display: block;
+}
+
+.alerta {
+  display: none;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  border: 2px solid var(--erro);
+  border-radius: var(--raio);
+  background: var(--erro-fundo);
+  color: var(--erro);
+  font-weight: 500;
+}
+
+.alerta.visivel {
+  display: flex;
+}
+
+.alerta a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.alerta svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.campo-topo {
+  display: flex;
+  margin-bottom: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.campo-topo label {
+  margin-bottom: 0;
+}
+
+.contador {
+  color: var(--tinta-suave);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.campos-linha {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 16px;
+}
+
+.campo-dinheiro {
+  position: relative;
+}
+
+.campo-dinheiro span {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  font-weight: 600;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.campo-dinheiro input {
+  padding-left: 46px;
+}
+
+.campo .marcar,
+.marcar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.marcar input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--laranja-forte);
+  cursor: pointer;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--tinta);
+  border-radius: var(--raio);
+  background: #e9f7ee;
+  font-weight: 600;
+}
+
+.aviso[hidden] {
+  display: none;
+}
+
+.aviso svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: #17803d;
+}
+
+@media (min-width: 640px) {
+  .campos-linha {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.campo input[type="number"]::-webkit-inner-spin-button,
+.campo input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.campo input[type="number"] {
+  -moz-appearance: textfield;
+}

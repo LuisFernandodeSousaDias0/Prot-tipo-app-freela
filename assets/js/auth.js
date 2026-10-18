@@ -9,6 +9,16 @@ function fazerLogin(email, senha) {
   return usuario;
 }
 
+function cadastrar({ nome, email, cidade, senha }) {
+  if (buscarUsuarioPorEmail(email)) {
+    return null;
+  }
+
+  const usuario = criarUsuario({ nome, email, cidade, senha });
+  salvarSessao(usuario);
+  return usuario;
+}
+
 function sair() {
   apagarSessao();
   window.location.href = "login.html";
