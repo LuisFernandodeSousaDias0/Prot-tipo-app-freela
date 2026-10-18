@@ -1,0 +1,265 @@
+body {
+  background: var(--branco);
+}
+
+.app-topo {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2px solid var(--tinta);
+  background: var(--branco);
+}
+
+.app-topo .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 72px;
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--tinta);
+  border-radius: 50%;
+  background: var(--laranja);
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+}
+
+.usuario-nome {
+  font-weight: 600;
+}
+
+.saudacao {
+  padding: 48px 0 40px;
+  border-bottom: 2px solid var(--tinta);
+  background: var(--laranja-claro);
+}
+
+.saudacao .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.saudacao h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.saudacao p {
+  margin-top: 8px;
+  color: var(--tinta-suave);
+  font-size: 1.1rem;
+}
+
+.painel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  padding-top: 32px;
+  padding-bottom: 80px;
+}
+
+.painel > * {
+  min-width: 0;
+}
+
+.filtros {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-content: start;
+}
+
+.busca {
+  position: relative;
+}
+
+.busca svg {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: var(--tinta-suave);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.busca input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px 0 46px;
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--branco);
+}
+
+.busca input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--laranja-linha);
+}
+
+.filtros-titulo {
+  margin-bottom: 12px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--branco);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.chip:hover {
+  background: var(--laranja-claro);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--tinta);
+  color: var(--branco);
+}
+
+.resultado-info {
+  margin-bottom: 16px;
+  color: var(--tinta-suave);
+}
+
+.resultado-info strong {
+  color: var(--tinta);
+}
+
+.lista-vagas {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+}
+
+.ficha-rodape {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--laranja-linha);
+}
+
+.ficha-autor {
+  color: var(--tinta-suave);
+  font-size: 0.92rem;
+}
+
+.ficha-autor strong {
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.ficha-categoria {
+  justify-self: start;
+  grid-column: 1 / -1;
+  order: -1;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--laranja-claro);
+  color: var(--laranja-texto);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.btn-candidatar {
+  min-height: 44px;
+}
+
+.btn-candidatar[aria-pressed="true"] {
+  background: var(--tinta);
+  color: var(--branco);
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-candidatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.vazio {
+  padding: 48px 24px;
+  border: 2px dashed var(--tinta);
+  border-radius: var(--raio-lg);
+  text-align: center;
+}
+
+.vazio h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.vazio p {
+  margin: 8px 0 20px;
+  color: var(--tinta-suave);
+}
+
+.vazio[hidden] {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .usuario-nome {
+    display: none;
+  }
+
+  .saudacao .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 900px) {
+  .painel {
+    grid-template-columns: 260px 1fr;
+    gap: 48px;
+    padding-top: 40px;
+  }
+
+  .filtros {
+    position: sticky;
+    top: 104px;
+  }
+
+  .chips {
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: visible;
+  }
+}

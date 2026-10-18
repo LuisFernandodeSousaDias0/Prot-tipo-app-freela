@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vagas abertas | Free-la</title>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>protegerPagina();</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/pages/home.css">
+</head>
+<body>
+
+  <header class="app-topo">
+    <div class="container">
+      <a href="home.html" class="logo" aria-label="Free-la, vagas abertas">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M4 6a2 2 0 0 1 2-2h11.2a2 2 0 0 1 1.4.6l9 9a2 2 0 0 1 0 2.8L16.4 27.6a2 2 0 0 1-2.8 0l-9-9A2 2 0 0 1 4 17.2Z" fill="#ff6b2c" stroke="#2b1608" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="10.5" cy="10.5" r="2.5" fill="#fff" stroke="#2b1608" stroke-width="2"/>
+        </svg>
+        free-la
+      </a>
+
+      <div class="usuario">
+        <span class="avatar" id="avatar" aria-hidden="true"></span>
+        <span class="usuario-nome" id="usuario-nome"></span>
+        <button type="button" class="btn btn-contorno" id="btn-sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="saudacao">
+      <div class="container">
+        <div>
+          <h1 id="saudacao-titulo">Olá!</h1>
+          <p id="saudacao-texto">Veja os bicos abertos em BH.</p>
+        </div>
+        <a href="publicar-vaga.html" class="btn btn-primario btn-grande">Publicar vaga</a>
+      </div>
+    </section>
+
+    <div class="container painel">
+      <aside class="filtros" aria-label="Filtros">
+        <div class="busca">
+          <label for="busca" class="sr-only">Buscar vagas</label>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="busca" placeholder="Serviço ou bairro">
+        </div>
+
+        <div>
+          <h2 class="filtros-titulo" id="titulo-categorias">Categorias</h2>
+          <ul class="chips" id="chips" aria-labelledby="titulo-categorias"></ul>
+        </div>
+      </aside>
+
+      <section aria-labelledby="titulo-lista">
+        <h2 class="sr-only" id="titulo-lista">Lista de vagas</h2>
+        <p class="resultado-info" id="resultado-info" aria-live="polite"></p>
+
+        <ul class="lista-vagas" id="lista-vagas"></ul>
+
+        <div class="vazio" id="vazio" hidden>
+          <h2>Nenhuma vaga com esse filtro</h2>
+          <p>Tente outra palavra ou veja todas as categorias.</p>
+          <button type="button" class="btn btn-contorno" id="btn-limpar">Ver todas as vagas</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/js/pages/home.js"></script>
+</body>
+</html>
